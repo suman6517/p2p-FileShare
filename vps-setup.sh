@@ -38,7 +38,7 @@ sudo apt install -y maven
 # Clone repository (uncomment and modify if using Git)
 # echo "Cloning repository..."
  git clone https://github.com/suman6517/p2p-FileShare.git
- cd peerlink
+ cd p2p-FileShare
 
 # Build backend
 echo "Building Java backend..."
