@@ -36,8 +36,8 @@ public class FileController {
         }
 
 
-        server.createContext("/upload" , new UploadHandler());
-        server.createContext("/download" , new DownloadHandler());
+        server.createContext("/api/upload", new UploadHandler());
+        server.createContext("/api/download", new DownloadHandler());
         // server.createContext("/", new CORSHandler()); // if the service is distributed we have to store the ip and all;
         server.setExecutor(executorService);  // Server will use the about threadPool;
 
@@ -89,6 +89,7 @@ public class FileController {
         @Override
         public void handle(HttpExchange exchange) throws IOException
         {
+            System.out.println(exchange.getRequestURI().getPath());
             Headers headers = exchange.getResponseHeaders();
 
             headers.add("Access-Control-Allow-Origin", "*");
