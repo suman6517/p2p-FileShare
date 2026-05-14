@@ -196,12 +196,17 @@ public class FileController {
             try {
                 String dataAsString = new String(data); // Todo : For Videos extend this and it will be Object
                 String filenameMarker = "filename=\"";
+
                 int fileNameStart = dataAsString.indexOf(filenameMarker);
-                if (fileNameStart == -1) {
+
+                if(fileNameStart == -1)
+                {
                     return null;
                 }
 
-                int fileNameEnd =  dataAsString.indexOf("\"", fileNameStart);
+                fileNameStart += filenameMarker.length();
+
+                int fileNameEnd = dataAsString.indexOf("\"", fileNameStart);
 
                 String fileName = dataAsString.substring(fileNameStart, fileNameEnd);
 
