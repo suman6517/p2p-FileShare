@@ -37,8 +37,8 @@ sudo apt install -y maven
 
 # Clone repository (uncomment and modify if using Git)
 # echo "Cloning repository..."
- git clone https://github.com/suman6517/p2p-FileShare.git
- cd p2p-FileShare
+# git clone https://github.com/suman6517/p2p-FileShare.git
+#cd peerlink
 
 # Build backend
 echo "Building Java backend..."
@@ -46,13 +46,15 @@ mvn clean package
 
 # Build frontend
 echo "Building frontend..."
-cd ui
+cd PeerLink-ui
 npm install
 npm run build
 cd ..
 
 # Set up Nginx
 echo "Setting up Nginx..."
+
+
 
 # Ensure the default site is removed to avoid conflicts
 if [ -e /etc/nginx/sites-enabled/default ]; then
@@ -120,12 +122,14 @@ fi
 # Start backend with PM2
 echo "Starting backend with PM2..."
 # Ensure all dependencies are in the classpath
-CLASSPATH="target/p2p-1.0-SNAPSHOT.jar:$(mvn dependency:build-classpath -DincludeScope=runtime -Dmdep.outputFile=/dev/stdout -q)"
-pm2 start --name peerlink-backend java -- -cp "$CLASSPATH" p2p.App
+#CLASSPATH="target/p2p-1.0-SNAPSHOT.jar:$(mvn dependency:build-classpath -DincludeScope=runtime -Dmdep.outputFile=/dev/stdout -q)"
+#pm2 start --name peerlink-backend java -- -cp "$CLASSPATH" p2p.App
+pm2 start "java -jar target/peerlink-1.0-SNAPSHOT.jar" --name peerlink-backend
+
 
 # Start frontend with PM2
 echo "Starting frontend with PM2..."
-cd ui
+cd PeerLink-ui
 pm2 start npm --name peerlink-frontend -- start
 cd ..
 

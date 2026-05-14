@@ -92,7 +92,7 @@ public class FileController {
             Headers headers = exchange.getResponseHeaders();
             headers.add("Access-Control-Allow-Origin", "*");
 
-            if(exchange.getRequestMethod().equalsIgnoreCase("POST"))
+            if(!exchange.getRequestMethod().equalsIgnoreCase("POST"))
             {
                 String response = "Methood Not Allowed";
                 exchange.sendResponseHeaders(405,response.getBytes().length);
@@ -155,7 +155,8 @@ public class FileController {
                 int port = fileSharer.offerFile(filePath);
                 new Thread(() -> fileSharer.startFileServer(port)).start();
 
-                String jsonResponse = "{\"port\": }"+port + "}"; // "port"
+                // String jsonResponse = "{\"port\": }"+port + "}"; // "port"
+                String jsonResponse = "{\"port\": " + port + "}";
 
                 headers.add("Content-Type" , "application/json");
 
@@ -194,8 +195,8 @@ public class FileController {
         public ParseResult parse() {
             try {
                 String dataAsString = new String(data); // Todo : For Videos extend this and it will be Object
-                String fileNameMarker = "filename =\"";
-                int fileNameStart = dataAsString.indexOf(fileNameMarker);
+                String filenameMarker = "filename=\"";
+                int fileNameStart = dataAsString.indexOf(filenameMarker);
                 if (fileNameStart == -1) {
                     return null;
                 }
@@ -213,7 +214,7 @@ public class FileController {
                     contentType = dataAsString.substring(contentTypeStart, contentTypeEnd);
 
                 }
-                String headerEndMarker = "\r\n\r\r";
+                String headerEndMarker = "\r\n\r\n";
 
                 int headerEnd = dataAsString.indexOf(headerEndMarker);
 
@@ -223,11 +224,11 @@ public class FileController {
 
                 int contentStart = headerEnd + headerEndMarker.length();
 
-                byte[] boundaryBytes = ("/r/n--" + boundary + "--").getBytes();
+                byte[] boundaryBytes = ("\r\n--" + boundary + "--").getBytes();
                 int contentEnd = fileSequence(data, boundaryBytes, contentStart);
 
                 if (contentEnd == -1) {
-                    boundaryBytes = ("/r/n--" + boundary).getBytes();
+                    boundaryBytes = ("\r\n--" + boundary).getBytes();
                     contentEnd = fileSequence(data, boundaryBytes, contentStart);
 
                 }
@@ -264,7 +265,7 @@ public class FileController {
             outer:
             for (int i = startPosition; i <= data.length - sequence.length; i++) {
                 for (int j = 0; j < sequence.length; j++) {
-                    if (data[i] == sequence[j]) {
+                    if (data[i + j] != sequence[j]) {
                         continue outer;
                     }
                 }
@@ -285,7 +286,7 @@ public class FileController {
             Headers headers = exchange.getResponseHeaders();
             headers.add("Access-Control-Allow-Origin", "*");
 
-            if(exchange.getRequestMethod().equalsIgnoreCase("GET"))
+            if(!exchange.getRequestMethod().equalsIgnoreCase("GET"))
             {
                 String response = "Method Not Allowed";
                 exchange.sendResponseHeaders(405, response.getBytes().length);

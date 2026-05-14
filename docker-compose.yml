@@ -1,25 +1,32 @@
-version: '3'
-services:
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
-    ports:
-      - "8080:8080"
-    # Expose the dynamic port range for P2P file sharing
-    expose:
-      - "49152-65535:49152-65535"
-    # For production, you might want to add port mappings for the dynamic ports
-    # ports:
-    #   - "49152-65535:49152-65535"
+#FROM maven:3.9-openjdk-17-slim AS build
+#WORKDIR /build
+#COPY pom.xml .
+#COPY src ./src
+#RUN mvn clean package
 
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
-    ports:
-      - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8080
-    depends_on:
-      - backend
+#FROM openjdk:17-slim
+#WORKDIR /app
+#COPY --from=build /build/target/peerlink-1.0-SNAPSHOT.jar app.jar
+#COPY --from=build /build/target/dependency/*.jar ./lib/
+#EXPOSE 8080
+#CMD ["java", "-cp", "app.jar:lib/*", "p2p.App"]
+
+
+FROM maven:3.9-openjdk-17-slim AS build
+
+WORKDIR /build
+
+COPY pom.xml .
+COPY src ./src
+
+RUN mvn clean package
+
+FROM openjdk:17-slim
+
+WORKDIR /app
+
+COPY --from=build /build/target/peerlink-1.0-SNAPSHOT.jar app.jar
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "app.jar"]

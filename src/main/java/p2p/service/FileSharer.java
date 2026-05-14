@@ -75,7 +75,7 @@ public class FileSharer
             {
                 OutputStream oos = clientSocket.getOutputStream();
                 String fileName = new File(filePath).getName();
-                String header = "FileName" + fileName+"\n";
+                String header = "FileName: " + fileName + "\n";
                 oos.write(header.getBytes());
                 byte[] buffer = new byte[4096];
                 int byteRead;
