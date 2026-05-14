@@ -38,7 +38,7 @@ public class FileController {
 
         server.createContext("/upload" , new UploadHandler());
         server.createContext("/download" , new DownloadHandler());
-        server.createContext("/", new CORSHandler()); // if the service is distributed we have to store the ip and all;
+        // server.createContext("/", new CORSHandler()); // if the service is distributed we have to store the ip and all;
         server.setExecutor(executorService);  // Server will use the about threadPool;
 
     }
@@ -90,7 +90,16 @@ public class FileController {
         public void handle(HttpExchange exchange) throws IOException
         {
             Headers headers = exchange.getResponseHeaders();
+
             headers.add("Access-Control-Allow-Origin", "*");
+            headers.add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+            headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+            if(exchange.getRequestMethod().equalsIgnoreCase("OPTIONS"))
+            {
+                exchange.sendResponseHeaders(204, -1);
+                return;
+            }
 
             if(!exchange.getRequestMethod().equalsIgnoreCase("POST"))
             {
@@ -289,7 +298,16 @@ public class FileController {
         public void handle(HttpExchange exchange) throws IOException
         {
             Headers headers = exchange.getResponseHeaders();
+
             headers.add("Access-Control-Allow-Origin", "*");
+            headers.add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+            headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+            if(exchange.getRequestMethod().equalsIgnoreCase("OPTIONS"))
+            {
+                exchange.sendResponseHeaders(204, -1);
+                return;
+            }
 
             if(!exchange.getRequestMethod().equalsIgnoreCase("GET"))
             {
