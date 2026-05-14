@@ -25,7 +25,7 @@ public class FileController {
     public FileController(int port) throws IOException {
         this.fileSharer = new FileSharer();
         this.server = HttpServer.create(new InetSocketAddress(port), 0);
-        this.uploadDir = System.getProperty("java.io.tempdir") + File.separator + "peerlinnk-upload";
+        this.uploadDir = System.getProperty("java.io.tmpdir") + File.separator + "peerlinnk-upload";
         this.executorService = Executors.newFixedThreadPool(10);
 
 
@@ -65,7 +65,7 @@ public class FileController {
             Headers headers = exchange.getResponseHeaders();
             headers.add("Access-Control-Allow-Origin", "*");
             headers.add("Access-Control-Allow-Methods", "GET , POST, OPTIONS");
-            headers.add("Access-Control-Add-Headers", "Content-Type , Authorization");
+            headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
             if(exchange.getRequestMethod().equals("OPTIONS"))
             {
@@ -201,7 +201,7 @@ public class FileController {
                     return null;
                 }
 
-                int fileNameEnd = dataAsString.indexOf("\"", fileNameStart);
+                int fileNameEnd =  dataAsString.indexOf("\"", fileNameStart);
 
                 String fileName = dataAsString.substring(fileNameStart, fileNameEnd);
 
